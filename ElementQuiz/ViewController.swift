@@ -19,16 +19,20 @@ enum State {
 var mode: Mode = .flashCard
 var state: State = .question
 
-class ViewController: UIViewController {
+var answerIsCorrect = false
+var correctAnswerCount = 0
+
+
+class ViewController: UIViewController, UITextFieldDelegate {
     
     let elementList = ["Carbon", "Gold", "Chlorine", "Sodium"]
-
+    
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var answerLabel: UILabel!
     
     @IBOutlet weak var modeSelector: UISegmentedControl!
     @IBOutlet weak var textField: UITextField!
-
+    
     @IBAction func showAnswer(_ sender: Any) {
         state = .answer
         
@@ -52,7 +56,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         updateUI()
     }
-
+    
     func updateFlashCardUI() {
         let elementName = elementList[currentElementIndex]
         let image = UIImage(named: elementName)
@@ -66,7 +70,16 @@ class ViewController: UIViewController {
     }
     
     func updateQuizUI() {
-        
+        switch state {
+        case .question:
+            answerLabel.text = ""
+        case .answer:
+            if answerIsCorrect {
+                answerLabel.text = "Correct! ✅"
+            } else {
+                answerLabel.text = "❌"
+            }
+        }
     }
     
     
@@ -79,6 +92,25 @@ class ViewController: UIViewController {
         }
     }
     
-
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        let textFieldContents = textField.text!
+        
+        if textFieldContents.lowercased() == elementList[currentElementIndex].lowercased() {
+            answerIsCorrect = true
+            correctAnswerCount += 1
+            print("Correct")
+        } else {
+            answerIsCorrect = false
+            print("wrong")
+        }
+        
+        state = .answer
+        
+        updateUI()
+        
+        return true
+        
+    }
 }
 
