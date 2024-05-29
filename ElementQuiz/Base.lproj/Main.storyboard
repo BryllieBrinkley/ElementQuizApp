@@ -52,6 +52,9 @@
                                     <segment title="Flashcard"/>
                                     <segment title="Quiz"/>
                                 </segments>
+                                <connections>
+                                    <action selector="switchModes:" destination="BYZ-38-t0r" eventType="valueChanged" id="7l5-cD-4mQ"/>
+                                </connections>
                             </segmentedControl>
                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="416-E9-AgL">
                                 <rect key="frame" x="117" y="443" width="149" height="34"/>

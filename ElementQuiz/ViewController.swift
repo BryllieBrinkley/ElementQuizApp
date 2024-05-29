@@ -4,7 +4,6 @@
 //
 //  Created by Jibryll Brinkley on 5/28/24.
 //
-
 import UIKit
 
 enum Mode {
@@ -15,8 +14,6 @@ enum State {
     case question, answer
 }
 
-
-var mode: Mode = .flashCard
 var state: State = .question
 
 var answerIsCorrect = false
@@ -26,6 +23,12 @@ var correctAnswerCount = 0
 class ViewController: UIViewController, UITextFieldDelegate {
     
     let elementList = ["Carbon", "Gold", "Chlorine", "Sodium"]
+    
+    var mode: Mode = .flashCard {
+        didSet {
+            updateUI()
+        }
+    }
     
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var answerLabel: UILabel!
@@ -50,6 +53,14 @@ class ViewController: UIViewController, UITextFieldDelegate {
         updateUI()
     }
     
+    @IBAction func switchModes(_ sender: Any) {
+        if modeSelector.selectedSegmentIndex == 0 {
+            mode = .flashCard
+        } else {
+            mode = .quiz
+        }
+    }
+    
     var currentElementIndex = 0
     
     override func viewDidLoad() {
@@ -57,10 +68,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
         updateUI()
     }
     
-    func updateFlashCardUI() {
-        let elementName = elementList[currentElementIndex]
-        let image = UIImage(named: elementName)
-        imageView.image = image
+    func updateFlashCardUI(elementName: String) {
+        textField.isHidden = true
+        textField.resignFirstResponder()
         
         if state == .answer {
             answerLabel.text = elementName
@@ -69,26 +79,41 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    func updateQuizUI() {
+    func updateQuizUI(elementName: String) {
+        
+        // text field and keyboard
+        textField.isHidden = false
+        switch state {
+        case .question:
+            textField.text = ""
+            textField.becomeFirstResponder()
+        case .answer:
+            textField.resignFirstResponder()
+        }
+        
+        //answer label
         switch state {
         case .question:
             answerLabel.text = ""
         case .answer:
             if answerIsCorrect {
-                answerLabel.text = "Correct! ✅"
+                answerLabel.text = "✅"
             } else {
                 answerLabel.text = "❌"
             }
         }
     }
     
-    
     func updateUI() {
+        let elementName = elementList[currentElementIndex]
+        let image = UIImage(named: elementName)
+        imageView.image = image
+        
         switch mode {
         case .flashCard:
-            updateFlashCardUI()
+            updateFlashCardUI(elementName: elementName)
         case .quiz:
-            updateQuizUI()
+            updateQuizUI(elementName: elementName)
         }
     }
     
@@ -108,9 +133,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
         state = .answer
         
         updateUI()
-        
+    
         return true
-        
     }
 }
 
