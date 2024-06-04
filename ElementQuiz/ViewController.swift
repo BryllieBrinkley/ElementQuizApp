@@ -11,13 +11,15 @@ enum Mode {
 }
 
 enum State {
-    case question, answer
+    case question, answer, score
 }
 
 var state: State = .question
 
 var answerIsCorrect = false
 var correctAnswerCount = 0
+
+var quizScore = 0
 
 
 class ViewController: UIViewController, UITextFieldDelegate {
@@ -47,9 +49,13 @@ class ViewController: UIViewController, UITextFieldDelegate {
         currentElementIndex += 1
         if currentElementIndex >= elementList.count {
             currentElementIndex = 0
+            if mode == .quiz {
+                state = .score
+                updateUI()
+                return
+            }
         }
         state = .question
-        
         updateUI()
     }
     
@@ -89,6 +95,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
             textField.becomeFirstResponder()
         case .answer:
             textField.resignFirstResponder()
+        case .score:
+            textField.isHidden = true
+            textField.resignFirstResponder()
         }
         
         //answer label
@@ -101,6 +110,12 @@ class ViewController: UIViewController, UITextFieldDelegate {
             } else {
                 answerLabel.text = "❌"
             }
+        case .score:
+            answerLabel.text = ""
+        }
+        
+        if state == .score {
+            displayScoreAlert()
         }
     }
     
@@ -131,10 +146,24 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
         
         state = .answer
-        
         updateUI()
-    
         return true
     }
+    
+    func displayScoreAlert() {
+        
+        let alert = UIAlertController(title: "Quiz Score", message: "Your score is \(correctAnswerCount) out of \(elementList.count).", preferredStyle: .alert)
+        
+        let dismissAction = UIAlertAction(title: "OK", style: .default, handler: scoreAlertDismissed(_:))
+        
+        alert.addAction(dismissAction)
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func scoreAlertDismissed(_ action: UIAlertAction) {
+        mode = .flashCard
+    }
+
 }
 
