@@ -28,6 +28,12 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     var mode: Mode = .flashCard {
         didSet {
+            switch mode {
+            case .flashCard:
+                setupFlashcards()
+            case .quiz:
+                setupQuiz()
+            }
             updateUI()
         }
     }
@@ -131,6 +137,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         switch mode {
         case .flashCard:
             updateFlashCardUI(elementName: elementName)
+
         case .quiz:
             updateQuizUI(elementName: elementName)
         }
