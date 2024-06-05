@@ -168,6 +168,20 @@ class ViewController: UIViewController, UITextFieldDelegate {
     func scoreAlertDismissed(_ action: UIAlertAction) {
         mode = .flashCard
     }
+    
+    
+    func setupFlashcards() {
+        state = .question
+        currentElementIndex = 0
+    }
 
+    func setupQuiz() {
+        state = .question
+        currentElementIndex = 0
+        answerIsCorrect = false
+        correctAnswerCount = 0
+    }
+    
+    
 }
 
