@@ -83,6 +83,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
         } else {
             answerLabel.text = "?"
         }
+        
+        modeSelector.selectedSegmentIndex = 0
     }
     
     func updateQuizUI(elementName: String) {
@@ -117,6 +119,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
         if state == .score {
             displayScoreAlert()
         }
+        
+        modeSelector.selectedSegmentIndex = 1
     }
     
     func updateUI() {
