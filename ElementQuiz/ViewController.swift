@@ -43,6 +43,11 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var modeSelector: UISegmentedControl!
     @IBOutlet weak var textField: UITextField!
+
+    @IBOutlet weak var showAnswerButton: UIButton!
+    @IBOutlet weak var nextElement: UIButton!
+    
+    
     
     @IBAction func showAnswer(_ sender: Any) {
         state = .answer
@@ -81,22 +86,28 @@ class ViewController: UIViewController, UITextFieldDelegate {
     }
     
     func updateFlashCardUI(elementName: String) {
+
         textField.isHidden = true
         textField.resignFirstResponder()
+        showAnswerButton.isHidden = false
         
         if state == .answer {
             answerLabel.text = elementName
         } else {
             answerLabel.text = "?"
         }
+
+        nextElement.isEnabled = true
+        nextElement.setTitle("Next Element", for: .normal)
         
         modeSelector.selectedSegmentIndex = 0
     }
     
+    
     func updateQuizUI(elementName: String) {
         
-        // text field and keyboard
         textField.isHidden = false
+        
         switch state {
         case .question:
             textField.text = ""
@@ -116,7 +127,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
             if answerIsCorrect {
                 answerLabel.text = "✅"
             } else {
-                answerLabel.text = "❌"
+                answerLabel.text = "❌\nCorrect answer: " + elementName
             }
         case .score:
             answerLabel.text = ""
@@ -127,9 +138,29 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
         
         modeSelector.selectedSegmentIndex = 1
+        
+        showAnswerButton.isHidden = true
+
+        if currentElementIndex == elementList.count - 1 {
+            nextElement.setTitle("Show Score", for: .normal)
+        } else {
+            nextElement.setTitle("Next Question", for: .normal)
+        }
+        
+        switch state {
+            
+        case .question:
+            nextElement.isEnabled = false
+        case .answer:
+            nextElement.isEnabled = true
+        case .score:
+            nextElement.isEnabled = false
+        }
+        
     }
     
     func updateUI() {
+        
         let elementName = elementList[currentElementIndex]
         let image = UIImage(named: elementName)
         imageView.image = image
